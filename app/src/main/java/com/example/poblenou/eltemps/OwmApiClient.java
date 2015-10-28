@@ -1,15 +1,15 @@
 package com.example.poblenou.eltemps;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
-
 import com.example.poblenou.eltemps.json.Forecast;
 import com.example.poblenou.eltemps.json.List;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -18,9 +18,10 @@ import retrofit.Retrofit;
 import retrofit.http.GET;
 import retrofit.http.Query;
 
-interface OpenWeatherMapService {
-    @GET("forecast/daily")                                                                  //Parte de la url que contiene los parametros
-    Call<Forecast> dailyForecast(
+interface OpenWeatherMapService {           //Creamos una interfaz que implementara la clase que creemos
+
+    @GET("forecast/daily")                  //Parte de la url que contiene los parametros
+    Call<Forecast> dailyForecast(           //Definimos el metodo que implementara la clase
             @Query("q") String city,
             @Query("mode") String format,
             @Query("units") String units,
@@ -29,13 +30,15 @@ interface OpenWeatherMapService {
 }
 
 public class OwmApiClient {
-    private final OpenWeatherMapService service;
-    private final String FORECAST_BASE_URL = "http://api.openweathermap.org/data/2.5/";     //Parte de la url antes de los parametros, no varia
-    private final String CITY = "Barcelona";
+
+    private final OpenWeatherMapService service;                                            //Constante objeto OpenWeatherMapService
+    private final String FORECAST_BASE_URL = "http://api.openweathermap.org/data/2.5/";     //Constante String URL, antes de los parametros
+    //private final String CITY = "Barcelona";                                                //Constante String, siempre consultamos Barcelona
     private final String APPID = "bd82977b86bf27fb59a04b61b657fb6f";
 
 
     public OwmApiClient() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(FORECAST_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -44,9 +47,19 @@ public class OwmApiClient {
         service = retrofit.create(OpenWeatherMapService.class);
     }
 
-    public void updateForecasts(final ArrayAdapter<String> adapter) {
+    public void updateForecasts(final ArrayAdapter<String> adapter, Context context) {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String city = preferences.getString("city", "Barcelona");
+
+        String units;
+        if (preferences.getString("units","0").equals(0)){
+            units = "Metric";
+        } else {
+            units = "Imperial";
+        }
         Call<Forecast> forecastCall = service.dailyForecast(
-                CITY, "json", "metric", 14, APPID
+                city, "json", units, 14, APPID
         );
         forecastCall.enqueue(new Callback<Forecast>() {
             @Override

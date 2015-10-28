@@ -37,7 +37,7 @@ public class MainActivityFragment extends Fragment {    //Clase que implementa u
 
         String data[] = {"Lun 26/10 - Soleado", "Mar 27/10 - Niebla", "Mier 26/10 - Nublado", "Jue 26/10 - Lluvioso",
                 "Lun 26/10 - Soleado", "Sab 26/10 - Parcialmente nublado", "Dom 26/10 - Soleado"};
-
+        //ArrayList<Object> objectos;
         items = new ArrayList(Arrays.asList(data));                                 //Añadimos el array de Strings a un ArrayList
         adapter = new ArrayAdapter<String>(getContext(),                            //Enlazamos con el adaptador los datos con el ListView
                 R.layout.filas_dias, R.id.tv_row, items);
@@ -81,7 +81,7 @@ public class MainActivityFragment extends Fragment {    //Clase que implementa u
 
     private void refresh() {
         OwmApiClient apiClient = new OwmApiClient();
-        apiClient.updateForecasts(adapter);
+        apiClient.updateForecasts(adapter, getContext());
     }
 
 }
