@@ -14,7 +14,7 @@
         based on your message history
     </string>
 
-    <string name="pref_title">City</string>
+    <string name="cities">City</string>
     <string name="default_city">Barcelona</string>
 
     <string name="unidades">Unit System</string>

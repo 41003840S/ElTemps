@@ -21,7 +21,7 @@ import retrofit.http.Query;
 interface OpenWeatherMapService {           //Creamos una interfaz que implementara la clase que creemos
 
     @GET("forecast/daily")                  //Parte de la url que contiene los parametros
-    Call<Forecast> dailyForecast(           //Definimos el metodo que implementara la clase
+    Call<Forecast> dailyForecast(           //Definimos el metodo que llamara la clase
             @Query("q") String city,
             @Query("mode") String format,
             @Query("units") String units,
@@ -52,10 +52,10 @@ public class OwmApiClient {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String city = preferences.getString("city", "Barcelona");
 
-        String units;
-        if (preferences.getString("units","0").equals(0)){
+        String units="";
+        if (preferences.getString("units","0").equals("0")){
             units = "Metric";
-        } else {
+        }else if (preferences.getString("units","0").equals("1")) {
             units = "Imperial";
         }
         Call<Forecast> forecastCall = service.dailyForecast(
